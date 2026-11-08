@@ -76,7 +76,7 @@ def main() -> None:
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["star_id", "ra_deg", "dec_deg", "magnitude"])
         for hr, ra, dec, mag in rows:
             w.writerow([hr, f"{ra:.6f}", f"{dec:.6f}", f"{mag:.2f}"])
