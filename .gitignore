@@ -1,0 +1,8 @@
+build/
+data/results/*
+!data/results/.gitkeep
+data/images/*
+!data/images/.gitkeep
+__pycache__/
+.venv/
+*.pyc
