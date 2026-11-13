@@ -6,7 +6,6 @@
 using namespace st;
 using Catch::Matchers::WithinAbs;
 
-// BSC5 HR numbers (verify against your downloaded file):
 constexpr int kPolaris = 424;
 constexpr int kDubhe = 4301;
 constexpr int kMerak = 4295;
