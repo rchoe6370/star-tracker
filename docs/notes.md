@@ -9,6 +9,6 @@
 | data/results/solved_image.csv | solve_image | plot_overlay.py | u,v,star_id,residual_px |
 
 Rules: header row always; one row per trial; save seed + settings in a .txt next to each CSV.
-
+s
 ## Log
-(date, what I tried, what broke, the number)
+

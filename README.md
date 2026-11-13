@@ -25,9 +25,3 @@ python python/prepare_catalog.py
 ./build/check_catalog data/catalog.csv
 ```
 
-## Status
-- [ ] Phase 0: catalog + conventions
-- [ ] Phase 1: simulator
-- [ ] Phase 2: attitude solve
-- [ ] Phase 3: identification
-- [ ] Phase 4: real images

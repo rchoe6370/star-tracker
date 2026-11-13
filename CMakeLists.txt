@@ -45,6 +45,12 @@ endif()
 add_library(startracker
   src/frames.cpp
   src/catalog.cpp
+  include/startracker/camera.hpp
+  include/startracker/attitude.hpp
+  include/startracker/metrics.hpp
+  include/startracker/pair_database.hpp
+  include/startracker/identifier.hpp
+  include/startracker/centroid.hpp
 )
 target_include_directories(startracker PUBLIC include)
 target_link_libraries(startracker PUBLIC Eigen3::Eigen PRIVATE st_warnings)
