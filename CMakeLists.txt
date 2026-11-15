@@ -40,43 +40,29 @@ else()
   target_compile_options(st_warnings INTERFACE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
 endif()
 
-# ---- Library: everything in src/ ----
-# Add new .cpp files here as you reach each phase.
-add_library(startracker
-  src/frames.cpp
-  src/catalog.cpp
-  include/startracker/camera.hpp
-  include/startracker/attitude.hpp
-  include/startracker/metrics.hpp
-  include/startracker/pair_database.hpp
-  include/startracker/identifier.hpp
-  include/startracker/centroid.hpp
-)
-target_include_directories(startracker PUBLIC include)
+file(GLOB ST_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cpp)
+add_library(startracker ${ST_SOURCES})
+
+target_include_directories(startracker 
+  PUBLIC ${CMAKE_SOURCE_DIR}/include
+  PRIVATE ${CMAKE_SOURCE_DIR}/third_party/stb)
 target_link_libraries(startracker PUBLIC Eigen3::Eigen PRIVATE st_warnings)
+target_compile_features(startracker PUBLIC cxx_std_17)
+target_compile_definitions(startracker PUBLIC ST_CATALOG_PATH="${CMAKE_SOURCE_DIR}/data/catalog.csv")
 
 # ---- Apps: one executable per file in apps/ ----
-function(st_add_app name)
-  add_executable(${name} apps/${name}.cpp)
-  target_link_libraries(${name} PRIVATE startracker st_warnings)
-endfunction()
-
-st_add_app(check_catalog)
-# Later phases:
-# st_add_app(run_simulator_check)
-# st_add_app(experiment_attitude)
-# st_add_app(experiment_identify)
-# st_add_app(solve_image)
+file(GLOB ST_APP_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/apps/*.cpp)
+foreach(app_src ${ST_APP_SOURCES})
+  get_filename_component(app_name ${app_src} NAME_WE)
+  add_executable(${app_name} ${app_src})
+  target_link_libraries(${app_name} PRIVATE startracker st_warnings)
+endforeach()
 
 # ---- Tests ----
 enable_testing()
-add_executable(star_tests
-  tests/test_frames.cpp
-  tests/test_catalog.cpp
-)
+file(GLOB ST_TEST_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/tests/*.cpp)
+add_executable(star_tests ${ST_TEST_SOURCES})
 target_link_libraries(star_tests PRIVATE startracker Catch2::Catch2WithMain st_warnings)
-target_compile_definitions(star_tests PRIVATE
-  ST_CATALOG_PATH="${CMAKE_SOURCE_DIR}/data/catalog.csv")
 include(CTest)
 include(Catch)
 catch_discover_tests(star_tests)
