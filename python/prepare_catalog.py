@@ -46,8 +46,6 @@ def parse_star(rec: dict):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("json_path", nargs="?", type=Path, default=None)
-    ap.add_argument("--max-mag", type=float, default=6.5,
-                    help="drop stars fainter than this (C++ filters further)")
     args = ap.parse_args()
 
     path = args.json_path
@@ -63,13 +61,11 @@ def main() -> None:
     if isinstance(data, dict):  # tolerate a wrapper object
         data = next(v for v in data.values() if isinstance(v, list))
 
-    rows, skipped, too_faint = [], 0, 0
+    rows, skipped = [], 0
     for rec in data:
         star = parse_star(rec)
         if star is None:
             skipped += 1
-        elif star[3] > args.max_mag:
-            too_faint += 1
         else:
             rows.append(star)
     rows.sort()
@@ -77,13 +73,12 @@ def main() -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["star_id", "ra_deg", "dec_deg", "magnitude"])
+        w.writerow(["star_id", "ra_deg", "dec_deg", "mag"])
         for hr, ra, dec, mag in rows:
             w.writerow([hr, f"{ra:.6f}", f"{dec:.6f}", f"{mag:.2f}"])
 
     print(f"Read {len(data)} records from {path.name}")
-    print(f"  skipped (missing coords/mag): {skipped}")
-    print(f"  dropped (mag > {args.max_mag}): {too_faint}")
+    print(f"  dropped (missing RA, DEC, or magnitude): {skipped}")
     print(f"  wrote {len(rows)} stars to {OUT}")
     by_id = {r[0]: r for r in rows}
     if 424 in by_id:
