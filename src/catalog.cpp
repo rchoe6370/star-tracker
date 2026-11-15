@@ -12,19 +12,19 @@ namespace {
 }
 }  // namespace
 
-Catalog Catalog::load(const std::string& csv_path, double max_magnitude) {
+Catalog Catalog::load(const std::string& csv_path, double mag_limit) {
   std::ifstream in(csv_path);
   if (!in) throw std::runtime_error("cannot open catalog: " + csv_path);
 
   std::string line;
   std::size_t lineno = 0;
 
-  // Header must match the contract exactly.
   if (!std::getline(in, line)) fail(csv_path, 1, "empty file");
   ++lineno;
   if (!line.empty() && line.back() == '\r') line.pop_back();
-  if (line != "star_id,ra_deg,dec_deg,magnitude")
+  if (line != "star_id,ra_deg,dec_deg,mag") {
     fail(csv_path, lineno, "unexpected header: '" + line + "'");
+  }
 
   Catalog cat;
   while (std::getline(in, line)) {
@@ -34,23 +34,21 @@ Catalog Catalog::load(const std::string& csv_path, double max_magnitude) {
 
     std::stringstream ss(line);
     std::string f[4];
-    for (auto& field : f)
+    for (auto& field : f) {
       if (!std::getline(ss, field, ',')) fail(csv_path, lineno, "expected 4 columns");
 
-    try {
-      const int id = std::stoi(f[0]);
-      const double ra_deg = std::stod(f[1]);
-      const double dec_deg = std::stod(f[2]);
-      const double mag = std::stod(f[3]);
-      if (mag > max_magnitude) continue;
-
-      Star s;
-      s.id = id;
-      s.v_sky = radec_to_unit(deg2rad(ra_deg), deg2rad(dec_deg));
-      s.magnitude = mag;
-      cat.stars_.push_back(s);
-    } catch (const std::exception&) {
-      fail(csv_path, lineno, "could not parse numbers in '" + line + "'");
+      try {
+        Star s;
+        s.id = std::stoi(f[0]);
+        s.ra = deg2rad(std::stod(f[1]));
+        s.dec = deg2rad(std::stod(f[2]));
+        s.mag = std::stod(f[3]);
+        if (s.mag > mag_limit) continue;
+        s.dir_sky = radec_to_unit(s.ra, s.dec);
+        cat.stars_.push_back(s);
+      } catch (const std::exception&) {
+        fail(csv_path, lineno, "could not parse numbers in '" + line + "'");
+      }
     }
   }
   return cat;

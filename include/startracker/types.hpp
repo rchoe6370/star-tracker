@@ -25,7 +25,7 @@ struct Star {
   std::int32_t id = 0;     // catalog ID (HR number for BSC5)
   double ra = 0.0;
   double dec = 0.0;
-  Vec3 v_sky = Vec3::UnitX(); // Unit vector, sky freame
+  Vec3 dir_sky = Vec3::UnitX(); // Unit vector, sky freame
   double mag = 0.0;  // smaller = brighter
 };
 
