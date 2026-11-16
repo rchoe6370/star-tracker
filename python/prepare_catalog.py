@@ -75,7 +75,7 @@ def main() -> None:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(["star_id", "ra_deg", "dec_deg", "mag"])
         for hr, ra, dec, mag in rows:
-            w.writerow([hr, f"{ra:.6f}", f"{dec:.6f}", f"{mag:.2f}"])
+            w.writerow([hr, f"{ra:.9f}", f"{dec:.9f}", f"{mag:.2f}"])
 
     print(f"Read {len(data)} records from {path.name}")
     print(f"  dropped (missing RA, DEC, or magnitude): {skipped}")

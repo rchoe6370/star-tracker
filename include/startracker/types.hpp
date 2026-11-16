@@ -17,8 +17,8 @@ constexpr double rad2arcsec(double r) { return rad2deg(r) * 3600.0; }
 
 // Shared tolerances
 constexpr double kTolUnit = 1e-12;        
-constexpr double kTo1Exact = 1e-9;
-constexpr double kTo1Crosscheck = 1e-8;
+constexpr double kTolExact = 1e-9;
+constexpr double kTolCrosscheck = 1e-8;
 
 // One catalog star. Direction is a unit vector in the sky frame.
 struct Star {
