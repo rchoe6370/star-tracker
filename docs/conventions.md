@@ -15,11 +15,5 @@
 `v_cam`, `v_sky`, `A_cam_from_sky`. Frame names must cancel:
 `v_cam = A_cam_from_sky * v_sky`.
 
-## Paper test (fill in by hand, ~20 min)
-- Camera points at RA=0, Dec=0. Rotation matrix A_cam_from_sky = ?
-- Star at (0,0) should appear at the image center.
-- A star slightly north (larger Dec) should move: ? (up / down / left / right)
 
-## Open decisions
-- RA/Dec -> vector in C++ (chosen, see catalog.hpp).
-- Roll definition: ?
+
